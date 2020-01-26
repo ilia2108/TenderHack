@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +70,9 @@ namespace TenderHack_Back
 
             }
             res = res.Remove(res.Length - 1);
-            return new OkObjectResult(res);
+
+            var review = await new Reviews().MakeRequest(res);
+            return new OkObjectResult(JsonConvert.SerializeObject(review));
         }
     }
 }
