@@ -1,0 +1,10 @@
+{
+  "frameworks": {
+    "net46": {
+      "dependencies": {
+        "Microsoft.NET.Sdk.Functions": "1.0.29",
+        "System.Data.SqlClient": "4.6.1"
+      }
+    }
+  }
+}
