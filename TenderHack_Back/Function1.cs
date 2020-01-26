@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -62,7 +63,8 @@ namespace TenderHack_Back
 
 
             var route = "/translate?api-version=3.0&to=en";
-            var translations = await new Translator().TranslateTextRequest(route, translate);
+            var translator = new Translator();
+            var translations = await translator.TranslateTextRequest(route, translate);
             string res = string.Empty;
             foreach (var str in translations)
             {
@@ -72,6 +74,19 @@ namespace TenderHack_Back
             res = res.Remove(res.Length - 1);
 
             var review = await new Reviews().MakeRequest(res);
+            var newRoute = "/translate?api-version=3.0&to=ru";
+            var tmp = await translator.TranslateTextRequest(newRoute, review.Summary);
+            review.Summary = tmp[0];
+            var translatesTags = new List<string>();
+            foreach (var elem in review.Tags)
+            {
+                tmp = await translator.TranslateTextRequest(newRoute, elem);
+                translatesTags.Add(tmp[0]);
+            }
+
+            review.Tags = translatesTags;
+            
+
             return new OkObjectResult(JsonConvert.SerializeObject(review));
         }
     }
